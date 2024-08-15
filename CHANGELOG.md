@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2024-08-15
+
+### Added
+
+- Add command not found
+
 ## [0.3.0] - 2023-07-11
 
 ### Changed
@@ -60,7 +66,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[Unreleased]: https://github.com/anypackage/psresourceget/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/anypackage/psresourceget/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/anypackage/psresourceget/releases/tag/v0.4.0
 [0.3.0]: https://github.com/anypackage/psresourceget/releases/tag/v0.3.0
 [0.2.4]: https://github.com/anypackage/psresourceget/releases/tag/v0.2.4
 [0.2.3]: https://github.com/anypackage/psresourceget/releases/tag/v0.2.3

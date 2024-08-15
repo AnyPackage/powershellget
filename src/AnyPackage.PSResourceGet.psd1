@@ -4,7 +4,7 @@
     CompatiblePSEditions = @('Desktop', 'Core')
     GUID = '4ffeffd3-7f83-4655-ac94-19eb41ebc792'
     Author = 'Thomas Nieto'
-    Copyright = '(c) 2023 Thomas Nieto. All rights reserved.'
+    Copyright = '(c) 2024 Thomas Nieto. All rights reserved.'
     Description = 'PSResourceGet provider for AnyPackage.'
     PowerShellVersion = '5.1'
     RequiredModules = @(

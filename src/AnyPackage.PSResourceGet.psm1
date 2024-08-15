@@ -6,13 +6,33 @@ using module AnyPackage
 using module Microsoft.PowerShell.PSResourceGet
 
 using namespace System.Collections.Generic
+using namespace System.Threading
 using namespace AnyPackage.Provider
+using namespace AnyPackage.Feedback
 using namespace Microsoft.PowerShell.PSResourceGet.UtilClasses
 
 [PackageProvider('PSResourceGet')]
 class PSResourceGetProvider : PackageProvider, IGetPackage, IFindPackage,
 IInstallPackage, ISavePackage, IUninstallPackage,
-IUpdatePackage, IPublishPackage, IGetSource, ISetSource {
+IUpdatePackage, IPublishPackage, IGetSource, ISetSource, ICommandNotFound {
+    [PackageProviderInfo] Initialize([PackageProviderInfo] $providerInfo) {
+        return [PSResourceGetProviderInfo]::new($providerInfo)
+    }
+
+    [IEnumerable[CommandNotFoundFeedback]] FindPackage([CommandNotFoundContext] $context, [CancellationToken] $token) {
+        $dict = [Dictionary[string, CommandNotFoundFeedback]]::new([StringComparer]::OrdinalIgnoreCase)
+        $packages = $this.ProviderInfo.CommandCache[$context.Command]
+
+        foreach ($package in $packages) {
+            if (!$dict.ContainsKey($package.Name)) {
+                $feedback = [CommandNotFoundFeedback]::new($package.Name, $this.ProviderInfo)
+                $dict.Add($package.Name, $feedback)
+            }
+        }
+
+        return $dict.Values
+    }
+
     #region GetPackage
     [void] GetPackage([PackageRequest] $request) {
         $params = @{
@@ -281,6 +301,34 @@ IUpdatePackage, IPublishPackage, IGetSource, ISetSource {
             'Register-PackageSource' { return [RegisterPackageSourceDynamicParameters]::new() }
             default { return $null }
         })
+    }
+}
+
+class PSResourceGetProviderInfo : PackageProviderInfo {
+    [Dictionary[string, List[PSResourceInfo]]] $CommandCache = [Dictionary[string, List[PSResourceInfo]]]::new([StringComparer]::OrdinalIgnoreCase)
+    
+    PSResourceGetProviderInfo([PackageProviderInfo] $providerInfo) : base($providerInfo) {
+        if ([Runspace]::DefaultRunspace.Name -eq $this.FullName) {
+            $this.SetCommandCache()
+        }
+    }
+
+    [void] SetCommandCache() {
+        $packages = Find-PSResource -Name * -Type Module
+
+        foreach ($package in $packages) {
+            $commands = $package.Tags | Where-Object { $_ -like "PSCommand*" } | ForEach-Object { $_ -replace 'PSCommand_', '' }
+
+            foreach ($command in $commands) {
+                if ($this.CommandCache.ContainsKey($command)) {
+                    $this.CommandCache[$command] += $package
+                } else {
+                    $list = [List[PSResourceInfo]]::new()
+                    $list += $package
+                    $this.CommandCache.Add($command, $package)
+                }
+            }
+        }
     }
 }
 

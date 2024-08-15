@@ -1,13 +1,15 @@
 @{
     RootModule = 'AnyPackage.PSResourceGet.psm1'
-    ModuleVersion = '0.3.0'
+    ModuleVersion = '0.4.0'
     CompatiblePSEditions = @('Desktop', 'Core')
     GUID = '4ffeffd3-7f83-4655-ac94-19eb41ebc792'
     Author = 'Thomas Nieto'
     Copyright = '(c) 2023 Thomas Nieto. All rights reserved.'
     Description = 'PSResourceGet provider for AnyPackage.'
     PowerShellVersion = '5.1'
-    RequiredModules = @('AnyPackage', 'Microsoft.PowerShell.PSResourceGet')
+    RequiredModules = @(
+        @{ ModuleName = 'AnyPackage'; ModuleVersion = '0.6.0' },
+        'Microsoft.PowerShell.PSResourceGet')
     FunctionsToExport = @()
     CmdletsToExport = @()
     AliasesToExport = @()
